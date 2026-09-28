@@ -1,0 +1,70 @@
+.table-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+table {
+  width: 90%;
+  margin: 10px;
+}
+
+table th {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+table td {
+  border: 1px solid rgb(80, 61, 61);
+  padding: 15px;
+}
+
+.main-context {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-div {
+  padding: 15px;
+  align-self: flex-end;
+  margin-right: 60px;
+}
+.filter-div select {
+  padding: 8px;
+  background-color: transparent;
+  color: black;
+  border: 2px solid black;
+  border-radius: 8px;
+  width: 150px;
+  height: 40px;
+  font-weight: 500;
+}
+
+.filter-div select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.filter-div select option {
+  background-color: white;
+  color: #222;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+table {
+  width: 90%;
+  margin: 10px;
+  color: #222;
+}
+
+table th {
+  padding: 10px;
+  border: 1px solid black;
+  color: #222;
+}
+
+table td {
+  border: 1px solid rgb(80, 61, 61);
+  padding: 15px;
+  color: #222;
+}
