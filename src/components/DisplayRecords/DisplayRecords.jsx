@@ -141,26 +141,63 @@ const records = [
   },
 ];
 import { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 import "./DisplayRecords.css";
 import Records from "../Records/Records";
+
 const DisplayRecords = () => {
   const [filteredList, setFilteredList] = useState(records);
   const [filterVal, setFilterVal] = useState("Sort by Status");
   const [filterInit, setFilterInit] = useState(true);
+  const [inputVal, setInputVal] = useState("");
   const onChangeFilterVal = (event) => {
+    const filteredStatus = event.target.value;
     setFilterVal(event.target.value);
     setFilterInit(false);
+    if (filteredStatus == "Both") {
+      setFilteredList(records);
+    } else {
+      const updatedListA_IN = records.filter((e) => {
+        return e.status.includes(filteredStatus);
+      });
+      setFilteredList(updatedListA_IN);
+    }
+  };
+
+  const onInputSubmit = () => {
+    const lowerInput = inputVal.toLowerCase();
+    const updatedList = records.filter((eachRecord) => {
+      const eName = eachRecord.name.toLowerCase();
+      const email = eachRecord.email.toLowerCase();
+
+      return eName.includes(lowerInput) || email.includes(lowerInput);
+    });
+
+    setFilteredList(updatedList);
+  };
+  const onNameSearch = (e) => {
+    setInputVal(e.target.value);
   };
   return (
     <div className="main-context">
       <div className="filter-div">
+        <div className="input-backdiv">
+          <div className="input-main-div">
+            <input type="text" id="inputFilter" onChange={onNameSearch} />
+            <button className="search-button" onClick={onInputSubmit}>
+              <FaSearch className="search-icon" />
+            </button>
+          </div>
+        </div>
         <div>
           <select value={filterVal} onChange={onChangeFilterVal}>
             {filterInit && (
               <option value="Sort by Status">Sort by Status</option>
             )}
+
             <option value="Active">Active</option>
-            <option value="InActive">InActive</option>
+            <option value="Inactive">InActive</option>
+            <option value="Both">Both</option>
           </select>
         </div>
       </div>

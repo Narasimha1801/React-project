@@ -1,6 +1,6 @@
 const Records = ({ records }) => {
   const { id, name, email, status, date } = records;
-  console.log(id, name, email, status, date);
+
   return (
     <tr>
       <td>{id}</td>

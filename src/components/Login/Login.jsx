@@ -6,7 +6,12 @@ import "./Login.css";
 const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [isCrt, setIsCrt] = useState(false);
+
+  const [lenPasswordMsg, setLenPasswordMsg] = useState(false);
+  const [splCharPasswordMsg, setSplCharPasswordMsg] = useState(false);
+  const [numPasswordMsg, setNumPasswordMsg] = useState(false);
+  const [usernameCheck, setUserNameCheck] = useState(false);
+
   const navigate = useNavigate();
   const onuserName = (event) => {
     setUserName(event.target.value);
@@ -16,31 +21,37 @@ const Login = () => {
   };
   const onLogin = (event) => {
     event.preventDefault();
+    const val = password;
 
-    const userDetails = {
-      username: userName,
-      password: password,
-    };
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userDetails),
-    };
-    const apiUrl = "https://dummyjson.com/auth/login";
-    const getUserDetails = async () => {
-      const responce = await fetch(apiUrl, options);
-      const data = await responce.json();
-      const jwt_token = data.accessToken;
-      if (responce.ok == true) {
-        Cookies.set("jwt_token", jwt_token, { expires: 30 });
-        navigate("/dashbord", { replace: true });
-      } else {
-        setIsCrt(true);
+    const lenCondition = val.length >= 8;
+
+    const specialChar = /[!@#$%^&*(),.?":{}|<>[\]\\/'`~_+=;-]/;
+    const splComdition = specialChar.test(password);
+
+    const nums = /[0-9]/;
+    const numsCondition = nums.test(password);
+
+    const uNameCheck = userName.endsWith("@gmail.com");
+
+    if (lenCondition && splComdition && numsCondition && uNameCheck) {
+      const jwt_token = "userpasswordiscrt";
+      Cookies.set("jwt_token", jwt_token, { expires: 30 });
+      navigate("/dashbord", { replace: true });
+    } else {
+      if (!lenCondition) {
+        setLenPasswordMsg(true);
       }
-    };
-    getUserDetails();
+
+      if (!splComdition) {
+        setSplCharPasswordMsg(true);
+      }
+      if (!numsCondition) {
+        setNumPasswordMsg(true);
+      }
+      if (!uNameCheck) {
+        setUserNameCheck(true);
+      }
+    }
   };
 
   return (
@@ -54,6 +65,7 @@ const Login = () => {
             onChange={onuserName}
             value={userName}
           />
+          {usernameCheck && <p> Email should end with '@gmail.com'</p>}
         </div>
         <div className="password-div">
           <label htmlFor="password">Enter Your PassWord</label>
@@ -63,9 +75,13 @@ const Login = () => {
             onChange={onPassword}
             value={password}
           />
+          {lenPasswordMsg && <p> Password Should Contain atlest 8 Chars</p>}
+          {numPasswordMsg && <p>Password Should Contain atlest one number</p>}
+          {splCharPasswordMsg && (
+            <p>Password Should Contain atlest one Spl Chars</p>
+          )}
         </div>
         <button type="submit">Login</button>
-        {isCrt && <p>Enter the Correct Details</p>}
       </form>
     </div>
   );
