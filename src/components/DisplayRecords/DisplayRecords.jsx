@@ -148,35 +148,34 @@ import Records from "../Records/Records";
 const DisplayRecords = () => {
   const [filteredList, setFilteredList] = useState(records);
   const [filterVal, setFilterVal] = useState("Sort by Status");
-  const [filterInit, setFilterInit] = useState(true);
   const [inputVal, setInputVal] = useState("");
-  const onChangeFilterVal = (event) => {
-    const filteredStatus = event.target.value;
-    setFilterVal(event.target.value);
-    setFilterInit(false);
-    if (filteredStatus == "Both") {
-      setFilteredList(records);
-    } else {
-      const updatedListA_IN = records.filter((e) => {
-        return e.status.includes(filteredStatus);
-      });
-      setFilteredList(updatedListA_IN);
-    }
-  };
 
-  const onInputSubmit = () => {
-    const lowerInput = inputVal.toLowerCase();
+  function applyFilters(inputVal, filterVal) {
     const updatedList = records.filter((eachRecord) => {
       const eName = eachRecord.name.toLowerCase();
       const email = eachRecord.email.toLowerCase();
+      const searchFilter = eName.includes(inputVal) || email.includes(inputVal);
+      const selectFilter =
+        eachRecord.status == filterVal ||
+        filterVal === "Both" ||
+        filterVal === "default";
 
-      return eName.includes(lowerInput) || email.includes(lowerInput);
+      return searchFilter && selectFilter;
     });
 
     setFilteredList(updatedList);
+  }
+  const onInputSubmit = () => {
+    applyFilters(inputVal, filterVal);
   };
   const onNameSearch = (e) => {
-    setInputVal(e.target.value);
+    const lowerInputVal = e.target.value.toLowerCase();
+    setInputVal(lowerInputVal);
+  };
+  const onChangeFilterVal = (event) => {
+    const filteredStatus = event.target.value;
+    setFilterVal(event.target.value);
+    applyFilters(inputVal, filteredStatus);
   };
   return (
     <div className="main-context">
@@ -191,10 +190,6 @@ const DisplayRecords = () => {
         </div>
         <div>
           <select value={filterVal} onChange={onChangeFilterVal}>
-            {filterInit && (
-              <option value="Sort by Status">Sort by Status</option>
-            )}
-
             <option value="Active">Active</option>
             <option value="Inactive">InActive</option>
             <option value="Both">Both</option>
