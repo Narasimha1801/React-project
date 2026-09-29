@@ -162,8 +162,11 @@ const DisplayRecords = () => {
 
       return searchFilter && selectFilter;
     });
-
-    setFilteredList(updatedList);
+    if (inputVal) {
+      setFilteredList(updatedList);
+    } else {
+      setFilteredList(records);
+    }
   }
   const onInputSubmit = () => {
     applyFilters(inputVal, filterVal);
@@ -177,6 +180,24 @@ const DisplayRecords = () => {
     setFilterVal(event.target.value);
     applyFilters(inputVal, filteredStatus);
   };
+
+  /*
+   *Pagination
+   */
+  const [currPage, setCurrPage] = useState(0);
+
+  const pageSize = 5;
+  const noOfPages = Math.ceil(records.length / pageSize);
+  const pagesArray = [];
+  for (let i = 1; i <= noOfPages; i++) {
+    pagesArray.push(i);
+  }
+  const start = currPage * pageSize;
+  const end = start + pageSize;
+  const onPageChange = (n) => {
+    setCurrPage(n - 1);
+  };
+
   return (
     <div className="main-context">
       <div className="filter-div">
@@ -208,11 +229,20 @@ const DisplayRecords = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredList.map((eachObj) => (
+            {filteredList.slice(start, end).map((eachObj) => (
               <Records records={eachObj} key={eachObj.id} />
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="pagination-div">
+        {pagesArray.map((n) => {
+          return (
+            <div className="page-no-tag" key={n}>
+              <p onClick={() => onPageChange(n)}>{n}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
